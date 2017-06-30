@@ -1,0 +1,14 @@
+{{ question }}
+{{ vote }}
+<form action="/{{question.pk}}" method="POST">
+  {% csrf_token %}
+  {% for choice in choices %}
+    <label for="choice-{{choice.pk}}">{{ choice }}</label>
+    {% if choice == vote.selected_choice %}
+      <input type="radio" id="choice-{{choice.pk}}" value="{{choice.pk}}" name="choice" checked />
+    {% else %}
+      <input type="radio" id="choice-{{choice.pk}}" value="{{choice.pk}}" name="choice" />
+    {% endif %}
+  {% endfor %}
+  <input type="submit" name="submit" value="Vote" />
+</form>

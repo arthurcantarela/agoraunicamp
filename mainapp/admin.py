@@ -11,15 +11,15 @@ class UserInline(admin.StackedInline):
 class AuthUserAdmin(BaseUserAdmin):
     inlines = (UserInline, )
 
-class AnswerInline(admin.TabularInline):
-    model = Answer
+class ChoiceInline(admin.TabularInline):
+    model = Choice
     can_delete = True
 
-class QuestionAdmin(admin.ModelAdmin):
-    inlines = (AnswerInline, )
+class ChoiceQuestionAdmin(admin.ModelAdmin):
+    inlines = (ChoiceInline, )
 
 admin.site.unregister(AuthUser)
 admin.site.register(AuthUser, AuthUserAdmin)
 
 admin.site.register(Project)
-admin.site.register(Question, QuestionAdmin)
+admin.site.register(ChoiceQuestion, ChoiceQuestionAdmin)

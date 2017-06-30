@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User as AuthUser
@@ -47,6 +46,7 @@ class User(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=200, blank=True)
+    # phase =
 
     class Meta:
         verbose_name = 'Projeto'
@@ -55,7 +55,7 @@ class Project(models.Model):
     def __unicode__(self):
         return self.title
 
-class Post(models.Model):
+class Publication(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Autor')
     project = models.ForeignKey(Project, verbose_name='Projeto')
     title = models.CharField('Título', max_length=200, blank=True)
@@ -67,27 +67,50 @@ class Post(models.Model):
     def __unicode__(self):
         return self.title
 
-class Article(Post):
+class Tag(models.Model):
+    label = models.CharField(max_length=40, unique=True)
+    publications = models.ManyToManyField(Publication)
+
+    def __unicode__(self):
+        return self.label
+
+class Article(Publication):
     source = models.CharField(max_length=200, blank=True, default='')
 
     class Meta:
         verbose_name = 'Artigo'
         verbose_name_plural = 'Artigos'
 
-class Question(Post):
-    question_text = models.CharField(max_length=200, blank=True)
+# Questions
+class ChoiceQuestion(Publication):
+    question_text = models.CharField(max_length=200)
 
     class Meta:
         verbose_name = 'Questão'
         verbose_name_plural = 'Questões'
 
-class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=200, blank=True)
+class Choice(models.Model):
+    choice_text = models.CharField(max_length=200)
+    question = models.ForeignKey(ChoiceQuestion)
 
     class Meta:
-        verbose_name = 'Resposta'
-        verbose_name_plural = 'Respostas'
+        verbose_name = 'Alternativa'
+        verbose_name_plural = 'Alternativas'
 
     def __unicode__(self):
-        return self.answer
+        return self.choice_text
+
+class Vote(models.Model):
+    question = models.ForeignKey(ChoiceQuestion)
+    selected_choice = models.ForeignKey(Choice)
+    user = models.ForeignKey(User)
+
+    class Meta:
+        verbose_name = 'Voto'
+        verbose_name_plural = 'Votos'
+        unique_together = (
+            ('question', 'user')
+        )
+
+    def __unicode__(self):
+        return self.selected_choice.choice_text
