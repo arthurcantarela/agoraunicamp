@@ -1,0 +1,33 @@
+<form class="question-form" action="/question/proposal/{{publication.question.proposalquestion.pk}}" method="POST">
+  <div class="post-content">
+    <div class="post-header">
+      <ul class="filters filters-post">
+      {% for tag in publication.question.proposalquestion.tags.all %}
+        <li>{{tag.name}}</li>
+      {% endfor %}
+      </ul>
+      <h3>{{ publication }}</h3>
+    </div>
+    <div class="post-text">
+      {% csrf_token %}
+      <button type="button" class="post-btn add-proposal"> Adicionar proposta</button>
+      <div class="question-proposals">
+        <div class="proposal">
+          <textarea name="proposal-1"></textarea>
+          <div class="delete-btn">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <button type="submit" name="submit"class="post-btn post-btn-success">
+        Propor
+      </button>
+      <div class="post-about">
+        <img class="avatar" src='{{publication.author.avatar.url}}' />
+        Publicado por {{ publication.author }}
+      </div>
+    </div>
+  </div>
+  <div class="post-right">
+  </div>
+</form>

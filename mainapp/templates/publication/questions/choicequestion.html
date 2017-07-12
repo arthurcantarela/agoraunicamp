@@ -1,0 +1,32 @@
+<form class="question-form" action="/question/choice/{{publication.question.choicequestion.pk}}" method="POST">
+  <div class="post-content">
+    <div class="post-header">
+      <ul class="filters filters-post">
+      {% for tag in publication.question.choicequestion.tags.all %}
+        <li>{{tag.name}}</li>
+      {% endfor %}
+      </ul>
+      <h3>{{ publication }}</h3>
+    </div>
+    <div class="post-text">
+        {% csrf_token %}
+        <div class="question-choices">
+          {% for choice in publication.question.choicequestion.choice_set.all %}
+            <input type="radio" id="choice-{{choice.pk}}" value="{{choice.pk}}" name="choice" />
+            <label for="choice-{{choice.pk}}">{{ choice }}</label>
+          {% endfor %}
+        </div>
+        <button type="submit" name="submit"class="post-btn post-btn-success">
+          Responder
+        </button>
+      <div class="post-about">
+        Publicado por {{ publication.author }}
+      </div>
+    </div>
+  </div>
+  <div class="post-right">
+    <div class="post-menu">
+
+    </div>
+  </div>
+</form>

@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User as AuthUser
+from taggit.managers import TaggableManager
 
 class User(models.Model):
     user = models.OneToOneField(
@@ -22,6 +23,10 @@ class User(models.Model):
         ('8', 'Outro'),
     )
 
+    avatar = models.ImageField(
+        upload_to = 'media/img/',
+        default = 'media/img/no-avatar.jpg',
+    )
     first_name =  models.CharField('Nome', max_length=40, blank=True)
     last_name =  models.CharField('Sobrenome', max_length=100, blank=True)
     staff = models.CharField('Staff', max_length=1, blank=True, choices = STAFF_TYPE)
@@ -46,7 +51,7 @@ class User(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=200, blank=True)
-    # phase =
+    acronym = models.CharField('Sigla', max_length=10, blank=True)
 
     class Meta:
         verbose_name = 'Projeto'
@@ -60,19 +65,13 @@ class Publication(models.Model):
     project = models.ForeignKey(Project, verbose_name='Projeto')
     title = models.CharField('Título', max_length=200, blank=True)
     pub_date = models.DateField('Data de publicação')
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('pub_date', )
 
     def __unicode__(self):
         return self.title
-
-class Tag(models.Model):
-    label = models.CharField(max_length=40, unique=True)
-    publications = models.ManyToManyField(Publication)
-
-    def __unicode__(self):
-        return self.label
 
 class Article(Publication):
     source = models.CharField(max_length=200, blank=True, default='')
@@ -81,13 +80,17 @@ class Article(Publication):
         verbose_name = 'Artigo'
         verbose_name_plural = 'Artigos'
 
-# Questions
-class ChoiceQuestion(Publication):
-    question_text = models.CharField(max_length=200)
+class Question(Publication):
+    class Meta:
+        verbose_name = 'Questão'
+        verbose_name_plural = 'Questões'
 
     class Meta:
         verbose_name = 'Questão'
         verbose_name_plural = 'Questões'
+
+class ChoiceQuestion(Question):
+    question_text = models.CharField(max_length=200)
 
 class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
@@ -114,3 +117,53 @@ class Vote(models.Model):
 
     def __unicode__(self):
         return self.selected_choice.choice_text
+
+class ProposalQuestion(Question):
+    question_text = models.CharField(max_length=200)
+
+class Proposal(models.Model):
+    proposal_text = models.CharField(max_length=200)
+    question = models.ForeignKey(ProposalQuestion)
+    proponent = models.ForeignKey(User, blank=True)
+
+    class Meta:
+        verbose_name = 'Proposta'
+        verbose_name_plural = 'Propostas'
+
+    def __unicode__(self):
+        return self.proposal_text
+
+class Dissertation(models.Model):
+    answer = models.CharField(max_length=2000)
+
+class Debate(Publication):
+    about = models.CharField(max_length=200)
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        related_name='comment',
+    )
+    debate = models.ForeignKey(
+        Debate,
+        on_delete = models.CASCADE,
+        related_name = 'comment',
+    )
+    text = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.text
+
+class Reply(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        related_name='reply',
+    )
+    comment = models.ForeignKey(
+        Comment,
+        on_delete = models.CASCADE,
+        related_name = 'reply',
+    )
+    text = models.CharField(max_length=200)

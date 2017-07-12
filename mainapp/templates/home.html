@@ -1,1 +1,7 @@
-Welcome {{ user.username }}!
+<ul>
+  {% for project in projects %}
+    <li>
+      <a href="{% url 'project' project.acronym %}">{{ project }}</a>
+    </li>
+  {% endfor %}
+</ul>

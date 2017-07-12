@@ -1,0 +1,9 @@
+<div class="post participe">
+  {% if publication.question.choicequestion %}
+    {% include 'publication/questions/choicequestion.html' %}
+  {% elif publication.question.textquestion %}
+    {% include 'publication/questions/textquestion.html' %}
+  {% elif publication.question.proposalquestion %}
+    {% include 'publication/questions/proposalquestion.html' %}
+  {% endif %}
+</div>

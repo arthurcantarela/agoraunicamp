@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agora UI</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="mx max-left">
+  <nav class="topbar"></nav>
+  <div class="main-content">
+    <div class="center-column">
+      <div class="header">
+        <div class="search-bar">
+          <input type="text" placeholder="pesquise...">
+        </div>
+        <ul class="filters">
+          <li class="filter-conheca"><i class="fa fa-file-text" aria-hidden="true"></i></li>
+          <li class="filter-participe"><i class="fa fa-question-circle" aria-hidden="true"></i></li>
+          <li class="filter-resultado"><i class="fa fa-pie-chart" aria-hidden="true"></i></li>
+          <li class="filter-comunidade"><i class="fa fa-users" aria-hidden="true"></i></li>
+          {% for tag in all_tags %}
+          <li class="filter">{{tag}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="phases">
+        <div class="phase past-phase">
+          <div class="phase-number">
+            1
+          </div>
+          <div class="phase-name">
+            Conhecer Opinar
+          </div>
+        </div>
+        <div class="phase actual-phase">
+          <div class="phase-number">
+            2
+          </div>
+          <div class="phase-name">
+            Priorizar temáticas
+          </div>
+        </div>
+        <div class="phase future-phase">
+          <div class="phase-number">
+            3
+          </div>
+          <div class="phase-name">
+            Debater
+          </div>
+        </div>
+        <div class="phase future-phase">
+          <div class="phase-number">
+            4
+          </div>
+          <div class="phase-name">
+            Sintetizar propostas
+          </div>
+        </div>
+        <div class="phase future-phase">
+          <div class="phase-number">
+            5
+          </div>
+          <div class="phase-name">
+            Resultados
+          </div>
+        </div>
+      </div>
+      <div class="posts">
+        {% for publication in publications %}
+          {% if publication.article %}
+            {% include 'publication/article.html' %}
+          {% elif publication.question %}
+            {% include 'publication/question.html' %}
+          {% elif publication.result %}
+            {% include 'publication/result.html' %}
+          {% elif publication.debate %}
+            {% include 'publication/debate.html' %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+  <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>
