@@ -1,69 +1,39 @@
 <div class="post comunidade">
-  <form class="question-form" action="/question/proposal/{{publication.question.proposalquestion.pk}}" method="POST">
-    <div class="post-content">
-      <div class="post-header">
-        <ul class="filters filters-post">
-        {% for tag in publication.debate.tags.all %}
-          <li>{{tag.name}}</li>
-        {% endfor %}
-        </ul>
-        <h3>{{ publication }}</h3>
+  <div class="post-content">
+    <div class="post-header">
+      <ul class="filters filters-post">
+      {% for tag in publication.debate.tags.all %}
+        <li>{{tag.name}}</li>
+      {% endfor %}
+      </ul>
+      <h3>{{ publication }}</h3>
+    </div>
+    <div class="post-text">
+      <div>
+        {{publication.debate.about}}
       </div>
-      <div class="post-text">
-        <div>
-          {{publication.debate.about}}
-        </div>
+      {% csrf_token %}
+      <button type="button" class="post-btn" id="add-proposal">Mostrar mais</button>
+      {% for comment in publication.debate.comment.all %}
+        {% include 'publication/debate/comment.html' %}
+      {% endfor %}
+      <form class="comment-form" action="/debate/{{publication.debate.pk}}" method="POST">
         {% csrf_token %}
-        <button type="button" class="post-btn" id="add-proposal">Mostrar mais</button>
-        {% for comment in publication.debate.comment.all %}
-        <div class="post-comment">
-          <div class="comment-wrap">
-            <div class="comment-avatar">
-              <img class="avatar" src='{{comment.user.avatar.url}}' />
-            </div>
-            <div class="comment-text">
-              <span>{{comment.user}}:</span>
-              {{comment.text}}
-            </div>
-          </div>
-          <div class="replies">
-            {% for reply in comment.reply.all %}
-              <div class="reply">
-                <div class="reply-avatar">
-                  <img class="avatar avatar-small" src='{{reply.user.avatar.url}}' />
-                </div>
-                <div class="reply-text">
-                  <span>{{reply.user}}:</span>
-                  {{ reply.text }}
-                </div>
-              </div>
-            {% endfor %}
-            <div class="reply new-reply reply-collapse">
-              <div class="reply-avatar">
-                <img class="avatar avatar-small" src="{{user.avatar.url}}" />
-              </div>
-              <textarea></textarea>
-              <button type="button" class="post-btn post-btn-success reply-btn" id="reply-btn-x">Responder</button>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
         <div class="post-comment new-comment">
           <div class="comment-wrap">
             <div class="comment-avatar">
               <img class="avatar" src="{{user.avatar.url}}" />
             </div>
-            <textarea></textarea>
-            <button type="button" class="post-btn" id="comment-btn">Comentar</button>
+              <textarea name="text"></textarea>
+              <button type="submit" class="post-btn comment-btn">Comentar</button>
           </div>
         </div>
-        <div class="post-about">
-          Publicado por {{ publication.author }}
-        </div>
+      </form>
+      <div class="post-about">
+        Publicado por {{ publication.author }}
       </div>
     </div>
-    <div class="post-right">
-    </div>
-  </form>
-
+  </div>
+  <div class="post-right">
+  </div>
 </div>

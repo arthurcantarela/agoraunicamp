@@ -1,0 +1,26 @@
+<div class="post-comment">
+  <div class="comment-wrap">
+    <div class="comment-avatar">
+      <img class="avatar" src='{{comment.user.avatar.url}}' />
+    </div>
+    <div class="comment-text">
+      <span>{{comment.user}}:</span>
+      {{comment.text}}
+    </div>
+  </div>
+  <div class="replies">
+    {% for reply in comment.reply.all %}
+      {% include 'publication/debate/reply.html' %}
+    {% endfor %}
+    <form class="reply-form" action="/comment/{{comment.pk}}">
+      {% csrf_token %}
+      <div class="reply new-reply reply-collapse">
+        <div class="reply-avatar">
+          <img class="avatar avatar-small" src="{{user.avatar.url}}" />
+        </div>
+        <textarea name="text"></textarea>
+        <button type="button" class="post-btn post-btn-success reply-btn">Responder</button>
+      </div>
+    </form>
+  </div>
+</div>

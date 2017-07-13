@@ -1,21 +1,17 @@
 $(document).ready(function() {
-  $('.question-form').submit(function(e) {
+  $('form.question-form').submit(function(e) {
     e.preventDefault();
     var form = $(this);
     form.children('textarea').each(function(i) {
-      console.log('hey');
       $(this).attr('name', 'proposal'+i);
     })
     var url = form.attr('action');
     var data = form.serialize();
-    console.log(data);
     $.ajax({
       type: 'POST',
       url: url,
       data: data,
       success: function(response) {
-        console.log(data);
-        console.log(response);
         form.closest('.post').addClass('collapse');
       },
       error: function() {
@@ -35,9 +31,29 @@ $(document).ready(function() {
     $(this).closest('.proposal').remove();
   });
 
-  $('.reply-btn').click(function() {
-    $('.new-reply').addClass('reply-collapse');
-    $(this).closest('.new-reply').removeClass('reply-collapse');
-    $(this).closest('.new-reply').find('textarea').focus();
+  $('form.comment-form, form.reply-form').submit(function(e) {
+    e.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+    var data = form.serialize();
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: data,
+      success: function(response) {
+        form.before(response);
+      }
+    });
+  });
+
+  $('.reply-btn').click(function(e) {
+    if($(this).closest('.new-reply').hasClass('reply-collapse')) {
+      e.preventDefault();
+      $('.new-reply').addClass('reply-collapse');
+      $('.new-reply button').attr('type', 'button');
+      $(this).closest('.new-reply').removeClass('reply-collapse');
+      $(this).closest('.new-reply').find('textarea').focus();
+      $(this).attr('type', 'submit');
+    }
   })
 });

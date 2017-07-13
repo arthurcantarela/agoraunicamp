@@ -40,6 +40,30 @@ def user_login(request):
         'error_message': error_message,
     })
 
+def comment(request, debate_id):
+    if request.method == 'POST':
+        comment = Comment(
+            user = User.objects.get(user=request.user),
+            debate = Debate.objects.get(pk=debate_id),
+            text = request.POST['text'],
+        )
+        comment.save()
+        return render(request, 'publication/debate/comment.html', {
+            'comment': comment,
+        })
+
+def reply(request, comment_id):
+    if request.method == 'POST':
+        reply = Reply(
+            user = User.objects.get(user=request.user),
+            comment = Comment.objects.get(pk=comment_id),
+            text = request.POST['text'],
+        )
+        reply.save()
+        return render(request, 'publication/debate/reply.html', {
+            'reply': reply,
+        })
+
 def project(request, acronym):
     project = get_object_or_404(Project, acronym=acronym)
     return render(request, 'project.html', {
