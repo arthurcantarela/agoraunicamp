@@ -1,25 +1,75 @@
 <div class="post-comment">
-  <div class="comment-wrap">
-    <div class="comment-avatar">
-      <img class="avatar" src='{{comment.user.avatar.url}}' />
+  <div class="comment-header">
+    <div class="comment-author">
+      <span>{{comment.user}}</span>
     </div>
-    <div class="comment-text">
-      <span>{{comment.user}}:</span>
-      {{comment.text}}
+    {% if comment.history.count > 1 %}
+    <button type="button" class="post-btn comment-history-btn">
+      <i class="fa fa-history" aria-hidden="true"></i>
+    </button>
+    {% endif %}
+    {% if user == comment.user %}
+    <button type="button" class="post-btn edit-btn">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </button>
+    <form class="comment-delete-form" method="DELETE" action="/comment/{{comment.pk}}">
+      <button type="submit" class="post-btn">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </form>
+    {% endif %}
+    <div class="comment-date">
+      <div>
+        {{comment.added|date:'d-m-Y'}} <i class="fa fa-calendar" aria-hidden="true"></i>
+      </div>
+      <div>
+        {{comment.added|date:'H:i'}} <i class="fa fa-clock-o" aria-hidden="true"></i>
+      </div>
     </div>
   </div>
+  {% if comment.history.count > 1 %}
+  <div class="comment-history history-collapse">
+    {% for edit in comment.history.all %}
+    <div class="comment-header">
+      <div>
+        {{edit.text}}
+      </div>
+      <div class="comment-date">
+        <div>
+          {{edit.updated|date:'d-m-Y'}} <i class="fa fa-calendar" aria-hidden="true"></i>
+        </div>
+        <div>
+          {{edit.updated|date:'H:i'}} <i class="fa fa-clock-o" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <form class="edit-comment-form" action="/comment_update/{{comment.pk}}" method="POST">
+    <div class="comment-body">
+      <div class="comment-avatar">
+        <img class="avatar" src='{{comment.user.avatar.url}}' />
+      </div>
+      <div class="comment-text">
+        {{comment.text}}
+      </div>
+      <textarea name="text"></textarea>
+      <button type="submit" class="post-btn comment-edit-btn">Editar</button>
+    </div>
+  </form>
   <div class="replies">
     {% for reply in comment.reply.all %}
       {% include 'publication/debate/reply.html' %}
     {% endfor %}
-    <form class="reply-form" action="/comment/{{comment.pk}}">
+    <form class="reply-form" action="/comment/{{comment.pk}}" method="POST">
       {% csrf_token %}
       <div class="reply new-reply reply-collapse">
         <div class="reply-avatar">
           <img class="avatar avatar-small" src="{{user.avatar.url}}" />
         </div>
         <textarea name="text"></textarea>
-        <button type="button" class="post-btn post-btn-success reply-btn">Responder</button>
+        <button type="submit" class="post-btn post-btn-success reply-btn">Responder</button>
       </div>
     </form>
   </div>

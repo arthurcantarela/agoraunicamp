@@ -1,9 +1,29 @@
 <div class="reply">
-  <div class="reply-avatar">
-    <img class="avatar avatar-small" src='{{reply.user.avatar.url}}' />
+  <div class="reply-header">
+    <div class="reply-author">
+      <span>{{reply.user}}</span>
+    </div>
+    <div class="reply-date">
+      <i class="fa fa-calendar" aria-hidden="true"></i> {{comment.updated|date:'d-m-Y'}}
+      <i class="fa fa-clock-o" aria-hidden="true"></i> {{comment.updated|date:'H:i'}}
+    </div>
   </div>
-  <div class="reply-text">
-    <span>{{reply.user}}:</span>
-    {{ reply.text }}
+  <div class="reply-body">
+    <div class="reply-avatar">
+      <img class="avatar avatar-small" src='{{reply.user.avatar.url}}' />
+    </div>
+    <div class="reply-text">
+      {{ reply.text }}
+    </div>
   </div>
+  <!--
+  {% if user == reply.user %}
+  <form class="reply-delete-form" method="DELETE" action="/reply/{{reply.pk}}">
+    <div class="reply-delete">
+      <button type="submit" class="reply-delete-btn">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+  </form>
+  {% endif %}-->
 </div>

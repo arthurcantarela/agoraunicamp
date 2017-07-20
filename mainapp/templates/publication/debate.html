@@ -20,12 +20,12 @@
       <form class="comment-form" action="/debate/{{publication.debate.pk}}" method="POST">
         {% csrf_token %}
         <div class="post-comment new-comment">
-          <div class="comment-wrap">
+          <div class="comment-body">
             <div class="comment-avatar">
               <img class="avatar" src="{{user.avatar.url}}" />
             </div>
-              <textarea name="text"></textarea>
-              <button type="submit" class="post-btn comment-btn">Comentar</button>
+            <textarea name="text"></textarea>
+            <button type="submit" class="post-btn comment-btn">Comentar</button>
           </div>
         </div>
       </form>

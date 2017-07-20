@@ -190,7 +190,7 @@ textarea {
   width: 100%;
   resize: none;
   border: 0 solid #ddd;
-  transition: all .3s;
+  transition: all .3s linear;
   font-size: 1em;
   color: #3c3c3c;
   padding: 2px 10px; }
@@ -275,7 +275,7 @@ textarea {
     color: #3c3c3c;
     font-size: 1em;
     padding: 8px;
-    transition: all .2s;
+    transition: all .2s linear;
     z-index: 10;
     text-transform: uppercase; }
     .post .post-btn.post-btn-success {
@@ -293,7 +293,7 @@ textarea {
       height: 100px;
       text-align: center;
       line-height: 90px;
-      transition: all .3s;
+      transition: all .3s linear;
       border: 5px solid #12d673;
       margin-left: 15px; }
       .post .question-choices label:nth-child(2) {
@@ -303,58 +303,103 @@ textarea {
       .post .question-choices input[type="radio"]:checked + label {
         background: #12d673; }
   .post .post-comment {
-    padding: 10px;
     background: #f56954; }
-    .post .post-comment .comment-wrap {
+    .post .post-comment .comment-header {
       display: flex;
       flex-direction: row;
-      align-items: center; }
-      .post .post-comment .comment-wrap .comment-avatar {
-        margin-right: 20px; }
-      .post .post-comment .comment-wrap .comment-text {
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #fbc0b7; }
+      .post .post-comment .comment-header .comment-author {
+        padding: 10px;
         width: 100%; }
-    .post .post-comment.new-comment {
+      .post .post-comment .comment-header .comment-date {
+        padding: 10px;
+        text-align: right;
+        font-size: .6em;
+        white-space: nowrap; }
+      .post .post-comment .comment-header .post-btn {
+        width: 50px;
+        border-color: transparent; }
+        .post .post-comment .comment-header .post-btn.post-btn-active {
+          color: #fbc0b7; }
+    .post .post-comment .comment-history {
+      max-height: 500px;
+      transition: all .3s;
+      overflow: auto; }
+      .post .post-comment .comment-history.history-collapse {
+        max-height: 0;
+        overflow: hidden; }
+      .post .post-comment .comment-history .comment-header {
+        padding: 10px;
+        padding-left: 90px; }
+    .post .post-comment .comment-body {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px; }
+      .post .post-comment .comment-body .comment-avatar {
+        margin-right: 20px; }
+    .post .post-comment:not(.new-comment) .comment-body textarea, .post .post-comment:not(.new-comment) .comment-body button {
+      display: none; }
+    .post .post-comment.new-comment .comment-body {
       padding: 0;
       padding-left: 10px; }
-      .post .post-comment.new-comment textarea {
+      .post .post-comment.new-comment .comment-body .comment-text {
+        display: none; }
+      .post .post-comment.new-comment .comment-body textarea {
         height: 100px; }
-      .post .post-comment.new-comment button {
+      .post .post-comment.new-comment .comment-body button {
         width: auto;
         height: 100px; }
     .post .post-comment .replies {
       margin-top: 10px;
-      background: #fbc0b7; }
-      .post .post-comment .replies > div {
-        padding-left: 30px; }
+      padding: 0 10px 10px; }
       .post .post-comment .replies .reply {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        border-bottom: 2px solid #f56954; }
-        .post .post-comment .replies .reply:not(.new-reply) {
-          padding-top: 5px;
-          padding-bottom: 5px; }
-        .post .post-comment .replies .reply .reply-text {
-          width: 100%; }
+        background: #fbc0b7;
+        margin-bottom: 10px; }
+        .post .post-comment .replies .reply .reply-header {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: baseline;
+          border-bottom: 1px solid #f56954;
+          padding: 10px;
+          padding-left: 30px; }
+          .post .post-comment .replies .reply .reply-header .reply-date {
+            font-size: .6em; }
+        .post .post-comment .replies .reply .reply-body {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 10px;
+          padding-left: 30px; }
         .post .post-comment .replies .reply .reply-avatar {
           margin-right: 20px;
           text-align: center; }
-        .post .post-comment .replies .reply.new-reply textarea {
-          height: 100px; }
-        .post .post-comment .replies .reply.new-reply .post-btn {
-          height: 100px;
-          width: 110px; }
-        .post .post-comment .replies .reply.new-reply.reply-collapse {
-          padding: 0; }
-          .post .post-comment .replies .reply.new-reply.reply-collapse textarea, .post .post-comment .replies .reply.new-reply.reply-collapse .reply-avatar {
-            width: 0;
-            height: 50px;
-            padding: 0;
-            margin: 0;
-            overflow: hidden; }
-          .post .post-comment .replies .reply.new-reply.reply-collapse .post-btn {
-            height: 50px;
-            width: 100%; }
+        .post .post-comment .replies .reply.new-reply {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding-left: 30px;
+          margin: 0; }
+          .post .post-comment .replies .reply.new-reply textarea {
+            height: 100px; }
+          .post .post-comment .replies .reply.new-reply .post-btn {
+            height: 100px;
+            width: 110px; }
+          .post .post-comment .replies .reply.new-reply.reply-collapse {
+            padding: 0; }
+            .post .post-comment .replies .reply.new-reply.reply-collapse textarea, .post .post-comment .replies .reply.new-reply.reply-collapse .reply-avatar {
+              width: 0;
+              height: 50px;
+              padding: 0;
+              margin: 0;
+              overflow: hidden;
+              transition: all .3 linear; }
+            .post .post-comment .replies .reply.new-reply.reply-collapse .post-btn {
+              height: 50px;
+              width: 100%; }
     .post .post-comment span {
       font-weight: bold; }
   .post .question-proposals {
@@ -373,7 +418,7 @@ textarea {
         cursor: pointer; }
         .post .question-proposals .proposal .delete-btn .fa {
           opacity: .5;
-          transition: all .2s; }
+          transition: all .2s linear; }
         .post .question-proposals .proposal .delete-btn:hover .fa {
           opacity: 1; }
       .post .question-proposals .proposal:before {
@@ -393,10 +438,10 @@ textarea {
     .post.conheca .post-btn {
       background: #0ea2e5;
       border: 1px solid #095e86;
-      border-bottom-width: 8px; }
-    .post.conheca .post-btn:hover {
-      border-bottom-width: 1px;
       border-top-width: 8px; }
+    .post.conheca .post-btn:hover, .post.conheca.post-btn-active {
+      border-top-width: 1px;
+      border-bottom-width: 8px; }
     .post.conheca .post-text {
       background: #66c8f5; }
     .post.conheca .post-about:before {
@@ -415,10 +460,10 @@ textarea {
     .post.participe .post-btn {
       background: #12d673;
       border: 1px solid #0a7540;
-      border-bottom-width: 8px; }
-    .post.participe .post-btn:hover {
-      border-bottom-width: 1px;
       border-top-width: 8px; }
+    .post.participe .post-btn:hover, .post.participe.post-btn-active {
+      border-top-width: 1px;
+      border-bottom-width: 8px; }
     .post.participe .post-text {
       background: #8af5bf; }
     .post.participe .post-about:before {
@@ -437,10 +482,10 @@ textarea {
     .post.resultado .post-btn {
       background: #ff7d2a;
       border: 1px solid #c24a00;
-      border-bottom-width: 8px; }
-    .post.resultado .post-btn:hover {
-      border-bottom-width: 1px;
       border-top-width: 8px; }
+    .post.resultado .post-btn:hover, .post.resultado.post-btn-active {
+      border-top-width: 1px;
+      border-bottom-width: 8px; }
     .post.resultado .post-text {
       background: #ffba8f; }
     .post.resultado .post-about:before {
@@ -459,10 +504,10 @@ textarea {
     .post.comunidade .post-btn {
       background: #f56954;
       border: 1px solid #c1230b;
-      border-bottom-width: 8px; }
-    .post.comunidade .post-btn:hover {
-      border-bottom-width: 1px;
       border-top-width: 8px; }
+    .post.comunidade .post-btn:hover, .post.comunidade.post-btn-active {
+      border-top-width: 1px;
+      border-bottom-width: 8px; }
     .post.comunidade .post-text {
       background: #fbc0b7; }
     .post.comunidade .post-about:before {

@@ -151,9 +151,30 @@ class Comment(models.Model):
         related_name = 'comment',
     )
     text = models.CharField(max_length=200)
+    added = models.DateTimeField(auto_now_add=True, blank =True)
+    updated = models.DateTimeField(auto_now=True, blank=True)
 
     def __unicode__(self):
         return self.text
+
+    def save(self, *args, **kwargs):
+        super(Comment, self).save(*args, **kwargs)
+        if(self.history.count() == 0 or self.history.last().text != self.text):
+            comment_history = CommentHistory(
+                comment = self,
+                text = self.text,
+                updated = self.updated,
+            )
+            comment_history.save()
+
+class CommentHistory(models.Model):
+    comment = models.ForeignKey(
+        Comment,
+        on_delete = models.CASCADE,
+        related_name = 'history',
+    )
+    text = models.CharField(max_length=200)
+    updated = models.DateTimeField()
 
 class Reply(models.Model):
     user = models.ForeignKey(

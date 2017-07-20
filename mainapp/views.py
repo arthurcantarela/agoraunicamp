@@ -3,12 +3,16 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.utils.deprecation import MiddlewareMixin
 from taggit.models import Tag
 from .models import *
 from .forms import *
 
+'''
+Middleware to requires user to be logged in in every page.
+Redirects to login page in every request (existent pages).
+'''
 class LoginRequiredMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if 'login' in request.path:
@@ -17,6 +21,9 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             return HttpResponseRedirect(reverse('login'))
         return None
 
+'''
+Login page view
+'''
 def user_login(request):
     error_message = None
     if request.user.is_authenticated:
@@ -40,29 +47,89 @@ def user_login(request):
         'error_message': error_message,
     })
 
-def comment(request, debate_id):
+def home(request):
+    user = User.objects.get(user=request.user)
+    return render(request, 'home.html', {
+    'user': request.user,
+    'projects': Project.objects.all()
+    })
+
+'''
+Following views for CRUD in debate posts.
+Remove, update and delete objects requires logged in user to own it.
+'''
+def debate(request, debate_id):
+    user = User.objects.get(user=request.user)
     if request.method == 'POST':
         comment = Comment(
-            user = User.objects.get(user=request.user),
+            user = user,
             debate = Debate.objects.get(pk=debate_id),
             text = request.POST['text'],
         )
         comment.save()
         return render(request, 'publication/debate/comment.html', {
+            'user': user,
             'comment': comment,
         })
 
-def reply(request, comment_id):
+def comment(request, comment_id):
+    user = User.objects.get(user=request.user)
     if request.method == 'POST':
         reply = Reply(
-            user = User.objects.get(user=request.user),
+            user = user,
             comment = Comment.objects.get(pk=comment_id),
             text = request.POST['text'],
         )
         reply.save()
         return render(request, 'publication/debate/reply.html', {
+            'user': user,
             'reply': reply,
         })
+    elif request.method == 'DELETE':
+        comment = Comment.objects.get(pk=comment_id)
+        if user != comment.user:
+            return HttpResponseForbidden('User does not own this comment to delete it.')
+        else:
+            comment.delete()
+            return HttpResponse('Successfully deleted comment.')
+    elif request.method == 'PUT':
+        text = request.POST['text']
+        comment = Comment.objects.get(pk=comment_id)
+        if user != comment.user:
+            return HttpResponseForbidden('User does not own this comment to edit it.')
+        elif(text != comment.text):
+            comment.text = text
+            comment.save()
+            return render(request, 'publication/debate/comment.html', {
+                'user': user,
+                'comment': comment,
+            })
+        else:
+            return HttpResponseForbidden('No changes in comment')
+
+def comment_update(request, comment_id):
+    user = User.objects.get(user=request.user)
+    if request.method == 'POST':
+        text = request.POST['text']
+        comment = Comment.objects.get(pk=comment_id)
+        if user != comment.user:
+            return HttpResponseForbidden('User does not own this comment to edit it.')
+        elif(text != comment.text):
+            comment.text = text
+            comment.save()
+            return render(request, 'publication/debate/comment.html', {
+                'user': user,
+                'comment': comment,
+            })
+
+def reply(request, reply_id):
+    user = User.objects.get(user=request.user)
+    if request.method == 'DELETE':
+        reply = Reply.objects.get(pk=reply_id)
+        if user != reply.user:
+            return HttpResponseForbidden('User does not own this reply to delete it.')
+        reply.delete()
+        return HttpResponse('Successfully deleted reply.')
 
 def project(request, acronym):
     project = get_object_or_404(Project, acronym=acronym)
@@ -71,34 +138,6 @@ def project(request, acronym):
         'project': project,
         'publications': project.publication_set.all(),
         'all_tags': Tag.objects.all(),
-    })
-
-def signin(request):
-    error_message = None
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return home(request)
-            error_message = 'Usuário ou senha incorretos.'
-        else:
-            error_message = 'Os dados preenchidos não são válidos'
-    else:
-        # if request.user is not None:
-        #     return home(request)
-        form = LoginForm()
-
-    return render(request, 'signin.html', {'form': form, 'error_message': error_message})
-
-def home(request):
-    user = User.objects.get(user=request.user)
-    return render(request, 'home.html', {
-        'user': request.user,
-        'projects': Project.objects.all()
     })
 
 def vote(request, question_id):
