@@ -1,4 +1,4 @@
-<div class="post participe">
+<div id="p{{publication.id}}" class="post participe">
   {% if publication.question.choicequestion %}
     {% include 'publication/questions/choicequestion.html' %}
   {% elif publication.question.textquestion %}

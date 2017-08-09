@@ -3,7 +3,7 @@
 
 $categories: (
   conheca: (
-    icon: 's',
+    icon: '\f15c',
     color: (
       base: #0ea2e5,
       light: #66c8f5,
@@ -332,6 +332,10 @@ textarea {
     .post-text {
       padding: 20px;
       position: relative;
+      img {
+        max-width: 100%;
+        height: auto !important;
+      }
       & > * {
         margin-bottom: 10px;
       }

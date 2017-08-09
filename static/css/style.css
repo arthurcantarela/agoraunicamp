@@ -246,6 +246,10 @@ textarea {
     .post .post-content .post-text {
       padding: 20px;
       position: relative; }
+      .post .post-content .post-header img,
+      .post .post-content .post-text img {
+        max-width: 100%;
+        height: auto !important; }
       .post .post-content .post-header > *,
       .post .post-content .post-text > * {
         margin-bottom: 10px; }
@@ -447,7 +451,7 @@ textarea {
     .post.conheca .post-about:before {
       border-left-color: #0ea2e5; }
     .post.conheca .post-content:before {
-      content: "s";
+      content: "";
       color: #095e86;
       background: #0ea2e5; }
     .post.conheca .proposal:before {

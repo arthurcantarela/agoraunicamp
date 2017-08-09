@@ -1,4 +1,4 @@
-<div class="post comunidade">
+<div id="p{{publication.id}}" class="post comunidade">
   <div class="post-content">
     <div class="post-header">
       <ul class="filters filters-post">
@@ -14,7 +14,7 @@
       </div>
       {% csrf_token %}
       <button type="button" class="post-btn" id="add-proposal">Mostrar mais</button>
-      {% for comment in publication.debate.comment.all %}
+      {% for comment in publication.debate.comment.all|slice:'3' %}
         {% include 'publication/debate/comment.html' %}
       {% endfor %}
       <form class="comment-form" action="/debate/{{publication.debate.pk}}" method="POST">
@@ -23,6 +23,7 @@
           <div class="comment-body">
             <div class="comment-avatar">
               <img class="avatar" src="{{user.avatar.url}}" />
+              {{user}}
             </div>
             <textarea name="text"></textarea>
             <button type="submit" class="post-btn comment-btn">Comentar</button>

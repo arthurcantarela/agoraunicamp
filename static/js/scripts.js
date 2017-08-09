@@ -1,7 +1,55 @@
 $(document).ready(function() {
-  $('form.question-form').submit(function(e) {
+  // @TODO: deal with publication added after
+  // class Publication {
+  //
+  // }
+
+  function loadOlderPost(n=1) {
+    if(n>0) {
+      if($('.post').length > 0) {
+        var url = 'AGR/' + $('.post').last().attr('id').slice(1) + '/older';
+      } else {
+        var url = 'AGR/newest';
+      }
+      $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(response) {
+          $('#postsContainer').append(response);
+          loadOlderPost(n-1);
+        }
+      });
+    }
+  }
+
+  function loadNewerPost(n=1) {
+    if(n>0) {
+      if($('.post').length > 0) {
+        var url = 'AGR/' + $('.post').first().attr('id').slice(1) + '/newer';
+      } else {
+        var url = 'AGR/newest';
+      }
+      $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(response) {
+          $('#postsContainer').append(response);
+          loadNewerPost(n-1);
+        }
+      });
+    }
+  }
+
+  loadOlderPost(3);
+  $(window).on('scroll', function() {
+    if($('.post').length >= 3 && $(window).scrollTop() + $(window).height() - $(document).height() == 0) {
+      loadOlderPost();
+    }
+  });
+
+  $(document).on('click', 'form.question-form button[type="submit"]', function(e) {
     e.preventDefault();
-    var form = $(this);
+    var form = $(this).closest('form');
     form.children('textarea').each(function(i) {
       $(this).attr('name', 'proposal'+i);
     })
@@ -15,9 +63,6 @@ $(document).ready(function() {
       success: function(response) {
         form.closest('.post').addClass('collapse');
       },
-      error: function() {
-        console.error('Nao foi');
-      }
     });
   });
 
@@ -28,13 +73,12 @@ $(document).ready(function() {
   });
 
   $(document).on('click', '.proposal .delete-btn', function() {
-    console.log($(this).closest('.proposal'));
     $(this).closest('.proposal').remove();
   });
 
-  $('form.comment-form, form.reply-form').submit(function(e) {
+  $(document).on('click', 'form.comment-form button[type="submit"], form.reply-form button[type="submit"]', function(e) {
     e.preventDefault();
-    var form = $(this);
+    var form = $(this).closest('form');
     var url = form.attr('action');
     var data = form.serialize();
     var method = form.attr('method');
@@ -50,9 +94,9 @@ $(document).ready(function() {
     });
   });
 
-  $('form.edit-comment-form').submit(function(e) {
+  $(document).on('click', 'form.edit-comment-form button[type="submit"]', function(e) {
     e.preventDefault();
-    var form = $(this);
+    var form = $(this).closest('form');
     var url = form.attr('action');
     var data = form.serialize();
     var method = form.attr('method');
@@ -80,9 +124,9 @@ $(document).ready(function() {
     }
   });
 
-  $('form.comment-delete-form').submit(function(e) {
+  $(document).on('click', 'form.comment-delete-form button[type="submit"]', function(e) {
     e.preventDefault();
-    var form = $(this);
+    var form = $(this).closest('form');
     var url = form.attr('action');
     var data = form.serialize();
     var method = form.attr('method');
@@ -99,9 +143,9 @@ $(document).ready(function() {
     });
   });
 
-  $('form.reply-delete-form').submit(function(e) {
+  $(document).on('click', 'form.reply-delete-form button[type="submit"]', function(e) {
     e.preventDefault();
-    var form = $(this);
+    var form = $(this).closest('form');
     var url = form.attr('action');
     var data = form.serialize();
     var method = form.attr('method');

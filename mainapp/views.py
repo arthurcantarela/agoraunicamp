@@ -3,11 +3,12 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden, Http404
 from django.utils.deprecation import MiddlewareMixin
 from taggit.models import Tag
 from .models import *
 from .forms import *
+from django.views.decorators.csrf import csrf_exempt
 
 '''
 Middleware to requires user to be logged in in every page.
@@ -50,9 +51,65 @@ def user_login(request):
 def home(request):
     user = User.objects.get(user=request.user)
     return render(request, 'home.html', {
-    'user': request.user,
-    'projects': Project.objects.all()
+        'user': request.user,
+        'projects': Project.objects.all()
     })
+
+def older_publication(request, project, publication):
+    user = User.objects.get(user=request.user)
+    project = get_object_or_404(Project, acronym=project)
+    publication = get_object_or_404(Publication, id=publication)
+    try:
+        return render(request, 'publication.html', {
+            'user': request.user,
+            'publication': project.publication_set.filter(pub_date__lt=publication.pub_date)[0],
+        })
+    except:
+        Http404('Errow')
+
+def newer_publication(request, project, publication):
+    user = User.objects.get(user=request.user)
+    project = get_object_or_404(Project, acronym=project)
+    publication = get_object_or_404(Publication, id=publication)
+    try:
+        return render(request, 'publication.html', {
+            'user': request.user,
+            'publication': project.publication_set.filter(pub_date__gt=publication.pub_date)[0],
+        })
+    except:
+        Http404('Errow')
+
+def newest_publication(request, project):
+    user = User.objects.get(user=request.user)
+    project = get_object_or_404(Project, acronym=project)
+    try:
+        return render(request, 'publication.html', {
+            'user': request.user,
+            'publication': project.publication_set.all()[0],
+        })
+    except:
+        Http404('Errow')
+
+def publication(request, acronym, pub):
+    user = User.objects.get(user=request.user)
+    project = get_object_or_404(Project, acronym=acronym);
+    try:
+        return render(request, 'publication.html', {
+            'user': request.user,
+            'publication': project.publication_set.all()[int(pub)],
+        })
+    except:
+        return HttpResponseForbidden('sai fora')
+
+# def publication(request, pub_id):
+#     publication = get_object_or_404(Publication, id=pub_id)
+#     publications = Publication.objects.filter(id=pub_id)
+#     return render(request, 'project.html', {
+#         'user': User.objects.get(user=request.user),
+#         'project': project,
+#         'publications': publications,
+#         'all_tags': Tag.objects.all(),
+#     })
 
 '''
 Following views for CRUD in debate posts.
@@ -150,7 +207,7 @@ def vote(request, question_id):
             question = question,
             defaults={'selected_choice': selected_choice}
         )
-        HttpResponse('Vote registered.')
+        return HttpResponse('Vote registered.')
     return render(request, 'question.html', {
         'question': question,
         'choices': question.choice_set.all(),

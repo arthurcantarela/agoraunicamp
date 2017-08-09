@@ -8,7 +8,7 @@
 </head>
 
 <body class="mx max-left">
-  <nav class="topbar"></nav>
+  {% include 'navbar.html' %}
   <div class="main-content">
     <div class="center-column">
       <div class="header">
@@ -67,18 +67,10 @@
           </div>
         </div>
       </div>
-      <div class="posts">
-        {% for publication in publications %}
-          {% if publication.article %}
-            {% include 'publication/article.html' %}
-          {% elif publication.question %}
-            {% include 'publication/question.html' %}
-          {% elif publication.result %}
-            {% include 'publication/result.html' %}
-          {% elif publication.debate %}
-            {% include 'publication/debate.html' %}
-          {% endif %}
-        {% endfor %}
+      <div id="postsContainer" class="posts">
+        {# {% for publication in publications %}#}
+          {# {% include 'publication.html' %}#}
+        {# {% endfor %}#}
       </div>
     </div>
   </div>

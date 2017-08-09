@@ -3,6 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User as AuthUser
 from taggit.managers import TaggableManager
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class User(models.Model):
     user = models.OneToOneField(
@@ -64,17 +66,22 @@ class Publication(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Autor')
     project = models.ForeignKey(Project, verbose_name='Projeto')
     title = models.CharField('Título', max_length=200, blank=True)
-    pub_date = models.DateField('Data de publicação')
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        blank =True,
+        verbose_name = 'Data de publicação',
+    )
     tags = TaggableManager()
 
     class Meta:
-        ordering = ('pub_date', )
+        ordering = ('-pub_date', )
 
     def __unicode__(self):
         return self.title
 
 class Article(Publication):
     source = models.CharField(max_length=200, blank=True, default='')
+    content = RichTextUploadingField('ckeditor')
 
     class Meta:
         verbose_name = 'Artigo'
@@ -92,6 +99,10 @@ class Question(Publication):
 class ChoiceQuestion(Question):
     question_text = models.CharField(max_length=200)
 
+    # def save(self, *args, **kwargs):
+    #     super(Choice, self).save(*args, **kwargs)
+
+
 class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
     question = models.ForeignKey(ChoiceQuestion)
@@ -102,6 +113,7 @@ class Choice(models.Model):
 
     def __unicode__(self):
         return self.choice_text
+
 
 class Vote(models.Model):
     question = models.ForeignKey(ChoiceQuestion)
@@ -188,3 +200,35 @@ class Reply(models.Model):
         related_name = 'reply',
     )
     text = models.CharField(max_length=200)
+    added = models.DateTimeField(auto_now_add=True, blank =True)
+    updated = models.DateTimeField(auto_now=True, blank=True)
+
+    def __unicode__(self):
+        return self.text
+
+    def save(self, *args, **kwargs):
+        super(Reply, self).save(*args, **kwargs)
+        if(self.history.count() == 0 or self.history.last().text != self.text):
+            reply_history = ReplyHistory(
+                reply = self,
+                text = self.text,
+                updated = self.updated,
+            )
+            reply_history.save()
+
+class ReplyHistory(models.Model):
+    reply = models.ForeignKey(
+        Reply,
+        on_delete = models.CASCADE,
+        related_name = 'history',
+    )
+    text = models.CharField(max_length=200)
+    updated = models.DateTimeField()
+
+# class Result(Publication):
+#     about = models.CharField(max_length=200)
+#     question = models.ForeignKey(
+#         ChoiceQuestion,
+#         on_delete = models.CASCADE,
+#         related_name = 'result',
+#     )

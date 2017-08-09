@@ -1,0 +1,9 @@
+{% if publication.article %}
+  {% include 'publication/article.html' %}
+{% elif publication.question %}
+  {% include 'publication/question.html' %}
+{% elif publication.result %}
+  {% include 'publication/result.html' %}
+{% elif publication.debate %}
+  {% include 'publication/debate.html' %}
+{% endif %}
