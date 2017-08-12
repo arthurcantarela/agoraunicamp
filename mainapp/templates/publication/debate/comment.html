@@ -9,7 +9,7 @@
     </button>
     {% endif %}
     {% if user == comment.user %}
-    <button type="button" class="post-btn edit-btn">
+    <button type="button" class="post-btn edit-comment-btn">
       <i class="fa fa-pencil" aria-hidden="true"></i>
     </button>
     <form class="comment-delete-form" method="DELETE" action="/comment/{{comment.pk}}">
@@ -55,7 +55,7 @@
         {{comment.text}}
       </div>
       <textarea name="text"></textarea>
-      <button type="submit" class="post-btn comment-edit-btn">Editar</button>
+      <button type="submit" class="post-btn edit-comment-btn">Editar</button>
     </div>
   </form>
   <div class="replies">

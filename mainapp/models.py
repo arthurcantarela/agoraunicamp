@@ -225,10 +225,10 @@ class ReplyHistory(models.Model):
     text = models.CharField(max_length=200)
     updated = models.DateTimeField()
 
-# class Result(Publication):
-#     about = models.CharField(max_length=200)
-#     question = models.ForeignKey(
-#         ChoiceQuestion,
-#         on_delete = models.CASCADE,
-#         related_name = 'result',
-#     )
+class Result(Publication):
+    about = models.CharField(max_length=200)
+    choice_question = models.ForeignKey(
+        ChoiceQuestion,
+        on_delete = models.CASCADE,
+        related_name = 'result',
+    )

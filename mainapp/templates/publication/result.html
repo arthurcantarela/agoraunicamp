@@ -1,0 +1,76 @@
+<div id="p{{publication.id}}" class="post resultado">
+  <div class="post-content">
+    <div class="post-header">
+      <ul class="filters filters-post">
+      {% for tag in publication.result.tags.all %}
+        <li>{{tag.name}}</li>
+      {% endfor %}
+      </ul>
+      <h3>{{ publication }}</h3>
+    </div>
+    <div class="post-text">
+      <div class="chart">
+        <svg></svg>
+      </div>
+      <script>
+        var votes{{publication.id}} = {
+          {% for choice in publication.result.choice_question.choice_set.all %}
+            {{choice}}: 0,
+          {% endfor %}
+        }
+        var total{{publication.id}} = 0;
+        {% for vote in publication.result.choice_question.vote_set.all %}
+          votes{{publication.id}}.{{vote}}++;
+          total{{publication.id}}++
+        {% endfor %}
+        var data{{publication.id}} = [];
+        for(var key in votes{{publication.id}}) {
+          if(votes{{publication.id}}.hasOwnProperty(key)) {
+            data{{publication.id}}.push(votes{{publication.id}}[key]);
+          }
+        }
+
+        var x = d3.scaleLinear()
+          .domain([0, d3.max(data{{publication.id}})])
+          .range([0,$('#p{{publication.id}} .chart').width()]);
+
+        var chart{{publication.id}} = d3.select('#p{{publication.id}} .chart svg')
+          .attr('width', $('#p{{publication.id}} .chart').width())
+          .attr('height', $('#p{{publication.id}} .chart').height());
+
+        var bar{{publication.id}} = chart{{publication.id}}.selectAll('g')
+          .data(data{{publication.id}})
+        .enter().append('g')
+          .attr("transform", function(d, i) { return "translate(0," + i * 40 + ")"; });;
+
+        bar{{publication.id}}.append('rect')
+          .attr('width', x)
+          .attr('height', 30)
+          .style('fill','white');
+
+        bar{{publication.id}}.append('text')
+          .text(function(d, i) {
+            var vote_label = '';
+            var j = 0;
+            for(var key in votes{{publication.id}}) {
+              if(j == i) {
+                vote_label = key;
+              }
+              if(votes{{publication.id}}.hasOwnProperty(key)) {
+                j++;
+              }
+            }
+            return vote_label + ' ' + d;
+          })
+          .attr('y', 20)
+          .attr('x', 20);
+
+      </script>
+      <div class="post-about">
+        Publicado por {{ publication.author }}
+      </div>
+    </div>
+  </div>
+  <div class="post-right">
+  </div>
+</div>

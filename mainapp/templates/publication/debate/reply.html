@@ -3,11 +3,49 @@
     <div class="reply-author">
       <span>{{reply.user}}</span>
     </div>
+    {% if reply.history.count > 1 %}
+    <button type="button" class="post-btn reply-history-btn">
+      <i class="fa fa-history" aria-hidden="true"></i>
+    </button>
+    {% endif %}
+    {% if user == reply.user %}
+    <button type="button" class="post-btn edit-btn">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </button>
+    <form class="reply-delete-form" method="DELETE" action="/reply/{{reply.pk}}">
+      <button type="submit" class="post-btn">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </form>
+    {% endif %}
     <div class="reply-date">
-      <i class="fa fa-calendar" aria-hidden="true"></i> {{reply.updated|date:'d-m-Y'}}
-      <i class="fa fa-clock-o" aria-hidden="true"></i> {{reply.updated|date:'H:i'}}
+      <div>
+        {{reply.added|date:'d-m-Y'}} <i class="fa fa-calendar" aria-hidden="true"></i>
+      </div>
+      <div>
+        {{reply.added|date:'H:i'}} <i class="fa fa-clock-o" aria-hidden="true"></i>
+      </div>
     </div>
   </div>
+  {% if reply.history.count > 1 %}
+  <div class="reply-history history-collapse">
+    {% for edit in reply.history.all %}
+    <div class="reply-header">
+      <div>
+        {{edit.text}}
+      </div>
+      <div class="reply-date">
+        <div>
+          {{edit.updated|date:'d-m-Y'}} <i class="fa fa-calendar" aria-hidden="true"></i>
+        </div>
+        <div>
+          {{edit.updated|date:'H:i'}} <i class="fa fa-clock-o" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="reply-body">
     <div class="reply-avatar">
       <img class="avatar avatar-small" src='{{reply.user.avatar.url}}' />

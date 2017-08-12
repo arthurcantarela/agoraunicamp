@@ -164,7 +164,7 @@ $(document).ready(function() {
     $(this).closest('.post-comment').find('.comment-history').toggleClass('history-collapse');
   });
 
-  $(document).on('click', '.edit-btn', function() {
+  $(document).on('click', '.edit-comment-btn[type="button"]', function() {
     $(this).toggleClass('post-btn-active');
     $(this).closest('.post-comment').toggleClass('new-comment');
     var comment = $(this).closest('.post-comment').find('.comment-text').html();

@@ -51,7 +51,7 @@ def user_login(request):
 def home(request):
     user = User.objects.get(user=request.user)
     return render(request, 'home.html', {
-        'user': request.user,
+        'user': user,
         'projects': Project.objects.all()
     })
 
@@ -61,7 +61,7 @@ def older_publication(request, project, publication):
     publication = get_object_or_404(Publication, id=publication)
     try:
         return render(request, 'publication.html', {
-            'user': request.user,
+            'user': user,
             'publication': project.publication_set.filter(pub_date__lt=publication.pub_date)[0],
         })
     except:
@@ -73,7 +73,7 @@ def newer_publication(request, project, publication):
     publication = get_object_or_404(Publication, id=publication)
     try:
         return render(request, 'publication.html', {
-            'user': request.user,
+            'user': user,
             'publication': project.publication_set.filter(pub_date__gt=publication.pub_date)[0],
         })
     except:
@@ -84,7 +84,7 @@ def newest_publication(request, project):
     project = get_object_or_404(Project, acronym=project)
     try:
         return render(request, 'publication.html', {
-            'user': request.user,
+            'user': user,
             'publication': project.publication_set.all()[0],
         })
     except:
@@ -95,7 +95,7 @@ def publication(request, acronym, pub):
     project = get_object_or_404(Project, acronym=acronym);
     try:
         return render(request, 'publication.html', {
-            'user': request.user,
+            'user': user,
             'publication': project.publication_set.all()[int(pub)],
         })
     except:

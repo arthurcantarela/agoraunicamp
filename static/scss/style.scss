@@ -19,7 +19,7 @@ $categories: (
     )
   ),
   resultado: (
-    icon: 'a',
+    icon: '\f200',
     color: (
       base: #ff7d2a,
       light: #ffba8f,
@@ -114,14 +114,55 @@ body {
 
 .topbar {
   height: 40px;
-  width: 100vw;
+  width: 100%;
   background: #3c3c3c;
   position: fixed;
   z-index: -1;
+  transition: all .3s;
+  .main-content {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    .center-column {
+      width: 60%;
+      margin: 0;
+    }
+    .project-menu, .user-menu {
+      height: 40px;
+      width: 20%;
+      // background: red;
+      overflow: hidden;
+      transition: all .3s;
+    }
+    .user-menu {
+      display: flex;
+      flex-direction: row;
+      #userAvatar {
+        height: 40px;
+        width: 40px;
+        object-fit: cover;
+      }
+    }
+  }
 }
 
-.max .topbar { height: 200px; }
-
+.chart {
+  margin:auto;
+  width: 300px;
+  height: 300px;
+}
+.max .topbar {
+  height: 200px;
+  .project-menu, .user-menu {
+    height: 200px;
+  }
+}
+.max.max-left .project-menu {
+  max-width: 0;
+}
+.max-right .user-menu {
+  max-width: 0;
+}
 .main-content {
   margin: auto;
   width: 1024px;
@@ -132,6 +173,7 @@ body {
   min-height: 100vh;
   width: 60%;
   margin-left: 20%;
+  transition: all .3s
 }
 
 .max.max-left .center-column { margin-left: 0; }
@@ -479,12 +521,38 @@ textarea {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          align-items: baseline;
+          align-items: center;
           border-bottom: 1px solid set_color(comunidade);
-          padding: 10px;
-          padding-left: 30px;
+          .reply-author {
+            padding: 10px;
+            width: 100%;
+          }
           .reply-date {
+            padding: 10px;
+            text-align: right;
             font-size: .6em;
+            white-space: nowrap;
+          }
+          .post-btn {
+            width: 50px;
+            border-color: transparent;
+            background: set_color(comunidade, light);
+            &.post-btn-active {
+              color: set_color(comunidade);
+            }
+          }
+        }
+        .reply-history {
+          max-height: 500px;
+          transition: all .3s;
+          overflow: auto;
+          &.history-collapse {
+            max-height: 0;
+            overflow: hidden;
+          }
+          .reply-header {
+            padding: 10px;
+            padding-left: 90px;
           }
         }
         .reply-body {
