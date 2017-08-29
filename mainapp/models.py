@@ -9,9 +9,9 @@ from ckeditor_uploader.fields import RichTextUploadingField
 class User(models.Model):
     user = models.OneToOneField(
         AuthUser,
-        primary_key=True,
-        parent_link=True,
-        on_delete=models.CASCADE
+        primary_key = True,
+        parent_link = True,
+        on_delete = models.CASCADE
     )
 
     STAFF_TYPE = (
@@ -52,8 +52,25 @@ class User(models.Model):
         return super(User, self).save(*args, **kwargs)
 
 class Project(models.Model):
-    title = models.CharField(max_length=200, blank=True)
-    acronym = models.CharField('Sigla', max_length=10, blank=True)
+    title = models.CharField(max_length=100, blank=True)
+    acronym = models.CharField(
+        'Sigla',
+        max_length = 10,
+    )
+
+    PHASE_CHOICES = (
+        (1, 'Conhecer e Opinar'),
+        (2, 'Priorizar Temática'),
+        (3, 'Debater'),
+        (4, 'Sintetizar Propostas'),
+        (5, 'Resultados'),
+    )
+
+    current_phase = models.IntegerField(
+        'Fase',
+        default = 1,
+        choices = PHASE_CHOICES
+    )
 
     class Meta:
         verbose_name = 'Projeto'
@@ -63,13 +80,37 @@ class Project(models.Model):
         return self.title
 
 class Publication(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Autor')
-    project = models.ForeignKey(Project, verbose_name='Projeto')
-    title = models.CharField('Título', max_length=200, blank=True)
+    author = models.ForeignKey(
+        User,
+        verbose_name = 'Autor',
+        related_name = 'publication',
+        on_delete = models.CASCADE,
+    )
+    project = models.ForeignKey(
+        Project,
+        verbose_name = 'Projeto',
+        related_name = 'publication',
+        on_delete = models.CASCADE,
+    )
+
+    PHASE_CHOICES = (
+        (1, 'Conhecer e Opinar'),
+        (2, 'Priorizar Temática'),
+        (3, 'Debater'),
+        (4, 'Sintetizar Propostas'),
+        (5, 'Resultados'),
+    )
+
+    phase = models.IntegerField(
+        'Fase',
+        default = 1,
+        choices = PHASE_CHOICES
+    )
+
+    title = models.CharField('Título', max_length=200)
     pub_date = models.DateTimeField(
-        auto_now_add=True,
-        blank =True,
         verbose_name = 'Data de publicação',
+        auto_now_add = True,
     )
     tags = TaggableManager()
 
@@ -80,7 +121,6 @@ class Publication(models.Model):
         return self.title
 
 class Article(Publication):
-    source = models.CharField(max_length=200, blank=True, default='')
     content = RichTextUploadingField('ckeditor')
 
     class Meta:
@@ -105,7 +145,11 @@ class ChoiceQuestion(Question):
 
 class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
-    question = models.ForeignKey(ChoiceQuestion)
+    question = models.ForeignKey(
+        ChoiceQuestion,
+        verbose_name = 'Questão',
+        related_name = 'choice',
+    )
 
     class Meta:
         verbose_name = 'Alternativa'
@@ -116,9 +160,21 @@ class Choice(models.Model):
 
 
 class Vote(models.Model):
-    question = models.ForeignKey(ChoiceQuestion)
-    selected_choice = models.ForeignKey(Choice)
-    user = models.ForeignKey(User)
+    question = models.ForeignKey(
+        ChoiceQuestion,
+        verbose_name = 'Questão',
+        related_name = 'vote',
+    )
+    selected_choice = models.ForeignKey(
+        Choice,
+        verbose_name = 'Alternativa escolhida',
+        related_name = 'vote',
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name = 'Usuário',
+        related_name = 'vote',
+    )
 
     class Meta:
         verbose_name = 'Voto'
@@ -135,7 +191,9 @@ class ProposalQuestion(Question):
 
 class Proposal(models.Model):
     proposal_text = models.CharField(max_length=200)
-    question = models.ForeignKey(ProposalQuestion)
+    question = models.ForeignKey(
+        ProposalQuestion
+    )
     proponent = models.ForeignKey(User, blank=True)
 
     class Meta:
@@ -232,3 +290,20 @@ class Result(Publication):
         on_delete = models.CASCADE,
         related_name = 'result',
     )
+
+class ProposalsRanking(Publication):
+    about = models.CharField(max_length=200)
+
+class RankedProposal(models.Model):
+    proposals_table = models.ForeignKey(
+        ProposalsRanking,
+        on_delete = models.CASCADE,
+        related_name = 'ranked_proposal',
+    )
+    ranking = models.IntegerField(
+        unique = True,
+    )
+    title = models.CharField(max_length=200)
+    points = models.IntegerField()
+    victories = models.IntegerField()
+    loses = models.IntegerField()

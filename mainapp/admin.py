@@ -39,6 +39,13 @@ class ReplyInline(admin.TabularInline):
 class CommentAdmin(admin.ModelAdmin):
     inlines = (ReplyInline, )
 
+class RankedProposalInline(admin.TabularInline):
+    model = RankedProposal
+    can_delete = True
+
+class ProposalsRankingAdmin(admin.ModelAdmin):
+    inlines = (RankedProposalInline, )
+
 admin.site.unregister(AuthUser)
 admin.site.register(AuthUser, AuthUserAdmin)
 
@@ -51,3 +58,4 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(CommentHistory)
 admin.site.register(Article)
 admin.site.register(Result)
+admin.site.register(ProposalsRanking, ProposalsRankingAdmin)
