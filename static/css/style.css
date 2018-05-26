@@ -129,10 +129,47 @@ body {
     font-style: italic;
     font-weight: 300; }
 
-.phases {
+
+
+.project-header {
+    position: relative;
+    padding: 20px;
+    margin: 10px 0;
+    background: #fff;    
+    justify-content: space-between; 
+}
+
+.etapa-content {
   position: relative;
   padding: 20px;
-  margin: 10px 0;
+  margin-bottom:10px;
+  background: #fff;    
+  justify-content: space-between; 
+}
+
+.project-name{
+    font-size:200%;
+    font-weight:bold;
+    text-align:center;
+    padding:15px;
+}
+
+.etapa-text{
+  text-align:left;
+  padding:15px;
+}
+
+.agora-logo{
+    padding:15px;
+    width:80%;
+    text-align:center;
+    margin:0 auto;
+}
+
+
+.phases {
+  position: relative;
+  padding: 20px; 
   background: #fff;
   display: flex;
   flex-direction: row;

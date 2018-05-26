@@ -12,53 +12,47 @@
   <div class="main-content">
     <div class="center-column">
       <div class="header">
-        <div class="search-bar">
-          <input type="text" placeholder="pesquise...">
-        </div>
-        <ul class="filters">
-          <li class="filter-conheca"><i class="fa fa-file-text" aria-hidden="true"></i></li>
-          <li class="filter-participe"><i class="fa fa-question-circle" aria-hidden="true"></i></li>
-          <li class="filter-resultado"><i class="fa fa-pie-chart" aria-hidden="true"></i></li>
-          <li class="filter-comunidade"><i class="fa fa-users" aria-hidden="true"></i></li>
-          {% for tag in all_tags %}
-          <li class="filter">{{tag}}</li>
-          {% endfor %}
-        </ul>
+        <img class="agora-logo" src="{% static 'img/agora_unicamp.png' %}"></img>
       </div>
-      <div class="phases">
-        <div class="phase past-phase">
+      <div class="project-header">
+        <div>Olá <b>{{user.nickname}}</b>, você está em</div>
+        <div class="project-name">{{project.title}}</div>
+      </div>
+     
+      <div class="phases">          
+        <div class="phase {{etapas.0}}-phase">
           <div class="phase-number">
             1
           </div>
           <div class="phase-name">
-            Conhecer Opinar
+            Ideias
           </div>
         </div>
-        <div class="phase actual-phase">
+        <div class="phase {{etapas.1}}-phase">
           <div class="phase-number">
             2
           </div>
           <div class="phase-name">
-            Priorizar temáticas
+            Temáticas
           </div>
         </div>
-        <div class="phase future-phase">
+        <div class="phase {{etapas.2}}-phase">
           <div class="phase-number">
             3
           </div>
           <div class="phase-name">
-            Debater
+            Debates
           </div>
         </div>
-        <div class="phase future-phase">
+        <div class="phase {{etapas.3}}-phase">
           <div class="phase-number">
             4
           </div>
           <div class="phase-name">
-            Sintetizar propostas
+            Propostas
           </div>
         </div>
-        <div class="phase future-phase">
+        <div class="phase {{etapas.4}}-phase">
           <div class="phase-number">
             5
           </div>
@@ -67,6 +61,16 @@
           </div>
         </div>
       </div>
+      
+      <div class="etapa-content">         
+          <div style="text-align:center;font-size:150%;font-weight:bold">{{etapas_txt.name}}</div>
+          <div class="etapa-text" style="text-align:center">{{etapas_txt.header_txt}}</div>
+          <div class="etapa-text"><b>Objetivo</b>: {{etapas_txt.objetivo_txt}}</div>
+          <div class="etapa-text"><b>Como participar</b>: {{etapas_txt.participar_txt}}</div>
+          <div class="etapa-text"><b>Resultados</b>: {{etapas_txt.resultado_txt}}</div>
+      </div>
+      
+      
       <div id="postsContainer" class="posts">
         {# {% for publication in publications %}#}
           {# {% include 'publication.html' %}#}

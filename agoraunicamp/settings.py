@@ -24,10 +24,11 @@ SECRET_KEY = '_y186j_0k7!2ian(+-(&v0u76f3s!!4e2^ux_xh@(3rs=aq&)%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SITE_URL = '127.0.0.1:8000'
 ALLOWED_HOSTS = [
     'localhost',
     '192.168.2.117',
+    '127.0.0.1',
 ]
 
 
